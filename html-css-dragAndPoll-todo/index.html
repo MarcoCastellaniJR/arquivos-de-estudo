@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo Drag And Drop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="fullBody">
+        <div class="in-and-out">
+            <input type="text" id="myInput" placeholder="Enter new task here">
+            <input type="button" class="insert" value="Inserir nova Task" onclick="criarTask()">
+        </div>
+        <div class="center">
+            <div class="left">
+                <div class="item" draggable="true">
+                    <i class="fa-solid fa-grip-vertical"></i>
+                    Item 03
+                </div>
+            </div>
+
+
+            <div class="right">
+                <div class="item" draggable="true">
+                    <i class="fa-solid fa-grip-vertical"></i>
+                    Item 01
+                </div>
+                <div class="item" draggable="true">
+                    <i class="fa-solid fa-grip-vertical"></i>
+                    Item 02
+                </div>
+            </div>
+        
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
