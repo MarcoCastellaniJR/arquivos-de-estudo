@@ -1,0 +1,34 @@
+:root{
+    --color1: #140951;
+    --color2: #152069;
+    --color3: #244A80;
+    --color4: #377A98; 
+    --color5: #4EADAF; 
+    --color6: #69C6AF; 
+    --color7: #88DEB0; 
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    position: fixed;
+}
+.complete{
+    width: 100%;
+    height: 100vh;
+}
+.intro{
+    background: rgb(230, 230, 230);
+}
+.about{
+    background: rgb(150,150,150);
+}
+.capacities{
+    background: rgb(75,75,75);
+}
+.final{
+    background: rgb(50,50,50);
+}
