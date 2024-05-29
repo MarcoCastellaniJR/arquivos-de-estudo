@@ -8,9 +8,14 @@ body{
     justify-content: center;
 }
 #ext{
+    left: 25%;
     height: 200px;
     display: block;
     position: relative;
+    animation: shake 0.25s infinite;
+}
+#main-circle{
+    background: #333;
 }
 #box1{
     width: 800px;
@@ -27,7 +32,7 @@ body{
 #box2{
     position: absolute;
     height: 30px;
-    width: 1000px;
+    width: 800px;
     bottom: 30px;
     background: red;
     right: 0px;
@@ -65,5 +70,8 @@ a:hover{
     height: 60px;
     width: 60px;
     border: solid 8px red;
-    animation: shake 0.2s infinite ;
+    animation: shake 0.1s infinite ;
+}
+i{
+    color: #333;
 }

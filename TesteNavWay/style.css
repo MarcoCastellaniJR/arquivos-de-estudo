@@ -1,0 +1,72 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    white-space: nowrap;
+
+}
+body{
+    min-width: 100vw;
+    min-width: 100vh;
+    position: relative;
+}
+#main-circle{
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    background: #333;
+    border-radius: 50%;
+    left: 100px;
+    top: 50px;
+    z-index: initial;
+    cursor: pointer;
+}
+.in-cir{
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    background: #333;
+    border-radius: 50%;
+    left: 15px;
+    top: 15px;
+    cursor: pointer;
+    transition: 0.5s;
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+}
+i{
+    height: 20px;
+    width: 20px;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* body do website
+*/
+#center{
+    min-height: auto;
+    overflow: hidden;
+    background: #f3f3f3;
+}
+
+/* Teste de Scroll Infinito */
+#scroll-inf{
+    display: inline-block;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 25px 0px;
+    animation: horizontal-scroll 10s infinite linear;
+}
+#center:hover #scroll-inf{
+    animation-play-state: paused;
+}
+#scroll-inf img{
+    height: 80px;
+    margin: 0px 50px;
+}
+@keyframes horizontal-scroll {
+    from{transform: translateX(0);}
+    to{transform: translateX(-100%);}
+}
+
