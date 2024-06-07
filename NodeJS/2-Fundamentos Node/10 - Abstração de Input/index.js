@@ -13,4 +13,5 @@ inquirer.prompt([
         console.log(answers);
         const media = ((parseInt(answers.p1) + parseInt(answers.p2))/2)
         console.log(`A média ficou em: ${media}`);
+        
     }).catch(errr => console.log(errr))
