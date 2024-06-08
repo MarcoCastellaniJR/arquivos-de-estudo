@@ -1,0 +1,8 @@
+Marco
+Beatriz
+Marco
+undefinedMarco
+function Date() { [native code] }Marco;
+Beatriz;
+Mateus;
+
