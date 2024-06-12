@@ -106,6 +106,8 @@ function deposit(){
     .catch(err => console.log(err))
 }
 
+// Function that will be used a lot of times
+// Every time that you willchange your account you have to check first
 function checkAccount(accountName){
     if(!fs.existsSync(`accounts/${accountName}.json`)){
         console.log(chalk.bgRed.black("Usuário Não tem uma conta criada"));
@@ -129,7 +131,8 @@ function addAmount(accountName,amount){
     console.log(chalk.bgGreen(`Agora sua conta tem R$:${account.balance}`));
 }
 
-
+// Gey your account, That function read the file with tha accountName on the dir
+// this make the file an object before return JSON.parse(accountJSON)
 function getAccount(accountName){
     const accountJSON = fs.readFileSync(`accounts/${accountName}.json`,{
         encoding: 'utf8',
@@ -139,22 +142,10 @@ function getAccount(accountName){
 }
 
 
-function removeMoney(accountName, amount) {
-    const account = getAccount(accountName)
-    
-    if(account.balance < amount){
-        console.log(chalk.bgRed(`You don't have this amount of money`))
-        return amountRemove(accountName)
-    }
-    account.balance = parseFloat(account.balance) - parseFloat(amount)
-    fs.writeFileSync(`accounts/${accountName}.json`, JSON.stringify(account))
-    console.log(chalk.bgYellow(`You had took $${amount} from you bank Account`))
-    console.log(chalk.bgGreen(`Now you have $${account.balance} on your Bank Account`))
-    start()
-}
 
 
 
+// Get balance --------------------------------------------------------------------------------------------------
 function getBalance(){
     inquirer.prompt([{
         name:'accountName',
@@ -171,6 +162,9 @@ function getBalance(){
     .catch(err => console.log(err))
 }
 
+
+
+// funtion to get some money 
 function getMoney(){
     inquirer.prompt([{
         name:'accountName',
@@ -188,6 +182,7 @@ function getMoney(){
     .catch(err => console.log(err))
 }
 
+// ask how much money you will get
 function amountRemove(accountData){
     inquirer.prompt([
         {
@@ -206,3 +201,21 @@ function amountRemove(accountData){
     })
     .catch(err => console.log(err))
 }
+
+// I remove the "amoutCheck" from the normal function to created a loop 
+function removeMoney(accountName, amount) {
+    const account = getAccount(accountName)
+    
+    if(account.balance < amount){
+        console.log(chalk.bgRed(`You don't have this amount of money`))
+        return amountRemove(accountName)
+    }
+    account.balance = parseFloat(account.balance) - parseFloat(amount)
+    fs.writeFileSync(`accounts/${accountName}.json`, JSON.stringify(account))
+    console.log(chalk.bgYellow(`You had took $${amount} from you bank Account`))
+    console.log(chalk.bgGreen(`Now you have $${account.balance} on your Bank Account`))
+    start()
+}
+
+
+
