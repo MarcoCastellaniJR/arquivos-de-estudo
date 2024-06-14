@@ -50,10 +50,10 @@ const intro = [{
         'Consultar Saldo',
         'Consultar Crédito',
         'Realizar Saque',
-        'Realizar deposito',
+        'Realizar Deposito',
         'Realizar Saque Credito',
-        'Realizar transferencia',
-        'Cancelar conta',
+        'Realizar Transferencia',
+        'Cancelar Conta',
         'Cancelar Ação',
         'Voltar para Home'
         ]
@@ -78,8 +78,9 @@ const justLogin = [{
     message: 'Digite seu CPF para logar'
 }]
 
-// Start the system
 
+
+// Start the system
 systemLogin()
 
 function systemLogin(){
@@ -95,10 +96,13 @@ function systemLogin(){
         if(action === 'Login as Admin'){
             adminLogin()
         }
-        
+        if(action === 'Sair'){
+            process.exit()
+        }
     }).catch(err => console.log(err))
 }
 
+//    LOGIN ON THE SYSTEM
 function loginSystemBased(){
     inquirer.prompt(justLogin).then(answer => {
         const idUser = answer['idClient']
@@ -106,31 +110,54 @@ function loginSystemBased(){
             console.log("You dont have an Account with this ID");
             return loginSystemBased()
         }
-        clientLogin(idUser)
 
+
+        clientLogin(idUser)
     }).catch(err => console.log(err))
 }
 
+// LOGIN PARA TELA DO CLIENTE
 function clientLogin(userCPF){
     inquirer.prompt(intro).then(answer => {
         let actionIntro = answer['userAction']
         const objectUser = userOBJ(`id-client/${userCPF}.json`)
-        if(actionIntro === 'Voltar para Home'){
-            systemLogin()
-        }
+
         if(actionIntro === 'Consultar Saldo'){
             console.log(`Olá ${objectUser.name}`);
-            console.log(`você tem ${objectUser.balance} de saldo Atualmente`)
-            //teste
+            console.log(`você tem R$${objectUser.balance} de saldo Atualmente`)
             clientLogin()
+        }
+        if(actionIntro === 'Consultar Crédito'){}
+        if(actionIntro === 'Realizar Saque'){}
+        if(actionIntro === 'Realizar Deposito'){
+            console.log("primeiro");
+            console.log(objectUser.balance);
+            objectUser.balance = objectUser.balance + 10;
+            const updateUser = JSON.stringify(objectUser)
+            fs.writeFileSync(`id-client/${userCPF}.json`,updateUser,'utf8')
+            console.log(`Segundo${objectUser.balance}`);
+            console.log(objectUser.balance);
+        }
+        if(actionIntro === 'Realizar Saque Credtio'){}
+        if(actionIntro === 'Realizar Transferencia'){}
+        if(actionIntro === 'Cancelar Conta'){}
+        if(actionIntro === 'Cancelar Ação'){}
+
+        if(actionIntro === 'Voltar para Home'){
+            systemLogin()
         }
         })
         }
         
-        
+//  LOGIN ADMIN        
 function adminLogin(){
     inquirer.prompt(loginAdmin).then(answer => {
         let actionAdmin = answer['userAction']
+        
+        if(actionAdmin === 'Consultar saldo geral do banco'){}
+        if(actionAdmin === 'Verificar se tem cliente Devedor'){}
+        if(actionAdmin === 'Verificar lista de cliente'){}
+        if(actionAdmin === 'Modificar informação de algum cliente'){}
         if(actionAdmin === 'Voltar para Home'){
             systemLogin()
         }
@@ -164,6 +191,29 @@ function newClientFile(clientName, clientCPF,clientAdress){
     systemLogin()
 }
 
+
+function registerBalance(userID,typeOperation,amoutUsed){
+    let stringtoRegister = `ID:${userID} - Mov:${typeOperation} - Amount:${amoutUsed}`;
+    takeRegister(stringtoRegister)
+
+}
+
+function registerTransation(takeUserID,receiverUserID,amoutMoney){
+    let stringRegister = `SendID:${takeUserID} ReceiverID<-${receiverUserID} - AmountMoney:${amoutMoney}`
+    takeRegister(stringRegister)
+}
+
+
+
+function takeRegister(){
+    if(!fs.existsSync(`BANKREGISTER/register.json`)){
+        fs.writeFileSync(`BANKREGISTER/register.json`,"=",function (err){console.log(err)})
+    }
+    fs.appendFileSync(`BANKREGISTER/register.json`,`\n=${fileRegister}`,function (err){console.log(err)})
+
+}
+
+
 // check if client Exist
 function checkClient(clientCPF){
     if(fs.existsSync(`id-client/${clientCPF}.json`)){
@@ -175,7 +225,7 @@ function checkClient(clientCPF){
 // Converter JSON to Object
 function userOBJ(filePath){
     try{
-        const dataUser = fs.readFileSync(filePath, 'utf8')// read file content
+        const dataUser = fs.readFileSync(filePath, {encoding:'utf8'})// read file content
         const jsonUser = JSON.parse(dataUser)
         return jsonUser;
     }
