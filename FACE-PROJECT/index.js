@@ -124,22 +124,114 @@ function clientLogin(userCPF){
 
         if(actionIntro === 'Consultar Saldo'){
             console.log(`Olá ${objectUser.name}`);
-            console.log(`você tem R$${objectUser.balance} de saldo Atualmente`)
+            console.log(chalk.green(`You have R$${objectUser.balance} in your balance now.`))
             clientLogin()
         }
         if(actionIntro === 'Consultar Crédito'){}
-        if(actionIntro === 'Realizar Saque'){}
-        if(actionIntro === 'Realizar Deposito'){
-            console.log("primeiro");
-            console.log(objectUser.balance);
-            objectUser.balance = objectUser.balance + 10;
-            const updateUser = JSON.stringify(objectUser)
-            fs.writeFileSync(`id-client/${userCPF}.json`,updateUser,'utf8')
-            console.log(`Segundo${objectUser.balance}`);
-            console.log(objectUser.balance);
+        if(actionIntro === 'Realizar Saque'){
+            takeMoney()
+            function takeMoney(){
+                console.log(`Hello ${objectUser.name}, you have ${objectUser.balance} on your account`)
+                inquirer.prompt([{
+                    type:'input',
+                    name:'amount',
+                    message:'How much money you will take??'
+                }])
+                .then((answer) => {
+                    const amount = answer['amount']
+                    if(!amount || isNaN(amount)){return takeMoney()}
+                    if(amount > objectUser.balance){
+                        console.log(chalk.red(`You don't have this amount, choose a value smaller then ${objectUser.balance}`))
+                        return takeMoney()
+                    }
+                    objectUser.balance = objectUser.balance-amount;
+                    const updateUser = JSON.stringify(objectUser)
+                    fs.writeFileSync(`id-client/${userCPF}.json`,updateUser,'utf8')
+                    registerBalance(userCPF,'LESS-',amount)
+                    console.log(`Now you have R$${objectUser.balance} on your account`)
+                    systemLogin()
+                })
+                .catch()
+            }
         }
-        if(actionIntro === 'Realizar Saque Credtio'){}
-        if(actionIntro === 'Realizar Transferencia'){}
+        if(actionIntro === 'Realizar Deposito'){
+            money()
+            function money (){
+                inquirer.prompt([{
+                    type: 'input',
+                    name:'amount',
+                    message:`Quanto você deseja adicionar a conta ${objectUser.name}??`
+                }])
+                .then((answer) => {
+                    const amount = answer['amount']
+                    if(!amount || isNaN(amount)){return money()}
+                    objectUser.balance = parseFloat(objectUser.balance) + parseFloat(amount);
+                    const updateUser = JSON.stringify(objectUser)
+                    fs.writeFileSync(`id-client/${userCPF}.json`,updateUser,'utf8')
+                    registerBalance(userCPF,'ADD++',amount)
+                    console.log(`Now you have R$${objectUser.balance} on your account`)
+                    systemLogin()
+                })
+                .catch((err) => console.log(err))
+            }
+        }
+        if(actionIntro === 'Realizar Saque Credito'){}
+        if(actionIntro === 'Realizar Transferencia'){
+            transfer()
+            function transfer() {
+                inquirer.prompt([{
+                    type: 'input',
+                    name: 'sendTo',
+                    message: 'Type the document for who you want send the money'
+                }])
+                .then((answer) => {
+                    const doc = answer['sendTo']
+                    if(!doc || isNaN(doc)){
+                        console.log(chalk.red("You don't write anithing or is not a Number"));
+                        return transfer()
+                    }
+                    if(!checkClient(doc)){
+                        console.log(chalk.red("User not in our Data-based"));
+                        return transfer()
+                    }
+                    if(doc === userCPF){
+                        console.log(chalk.red(`You can't send money to yourself`))
+                    }
+                    moneyTransfer()
+                    function moneyTransfer() {
+                        inquirer.prompt([{
+                            type: 'input',
+                            name:'amount',
+                            message:'How much money do you want to send?'
+                        }])
+                        .then((answer) => {
+                            const amount = answer['amount']
+                            if(!amount || isNaN(amount)){
+                                console.log(chalk.red("You don't write anithing or is not a Number"));
+                                moneyTransfer()
+                            }
+                            if(amount > objectUser.balance){
+                                console.log(chalk.red(`You don't have this amount, choose a value smaller then ${objectUser.balance}`))
+                            }
+                            const objectUserTransfer = userOBJ(`id-client/${doc}.json`)
+                            objectUser.balance = parseFloat(objectUser.balance) - parseFloat(amount)
+                            objectUserTransfer.balance = parseFloat(objectUserTransfer.balance) + parseFloat(amount)
+                            const updateSender = JSON.stringify(objectUser)
+                            const updateReceiver = JSON.stringify(objectUserTransfer)
+                            fs.writeFileSync(`id-client/${userCPF}.json`,updateSender,'utf8')
+                            fs.writeFileSync(`id-client/${doc}.json`,updateReceiver,'utf8')
+                            registerTransation(userCPF, doc, amount)
+                            console.log(chalk.green(`You ${objectUser.name} just send R$${amount} for ${objectUserTransfer.name}`))
+                            systemLogin()
+                        }).catch(err => console.log(err))
+                        
+                        
+                    }
+                    
+                })
+                .catch(err => console.log(err))
+            }
+        }
         if(actionIntro === 'Cancelar Conta'){}
         if(actionIntro === 'Cancelar Ação'){}
 
@@ -191,7 +283,7 @@ function newClientFile(clientName, clientCPF,clientAdress){
     systemLogin()
 }
 
-
+// REGISTRATION CLASSES
 function registerBalance(userID,typeOperation,amoutUsed){
     let stringtoRegister = `ID:${userID} - Mov:${typeOperation} - Amount:${amoutUsed}`;
     takeRegister(stringtoRegister)
@@ -199,17 +291,17 @@ function registerBalance(userID,typeOperation,amoutUsed){
 }
 
 function registerTransation(takeUserID,receiverUserID,amoutMoney){
-    let stringRegister = `SendID:${takeUserID} ReceiverID<-${receiverUserID} - AmountMoney:${amoutMoney}`
+    let stringRegister = `===>> SendID:${takeUserID} ==>> AmountMoney:${amoutMoney} ==>> ReceiverID<-${receiverUserID} `
     takeRegister(stringRegister)
 }
 
 
 
-function takeRegister(){
+function takeRegister(fileRegister){
     if(!fs.existsSync(`BANKREGISTER/register.json`)){
         fs.writeFileSync(`BANKREGISTER/register.json`,"=",function (err){console.log(err)})
     }
-    fs.appendFileSync(`BANKREGISTER/register.json`,`\n=${fileRegister}`,function (err){console.log(err)})
+    fs.appendFileSync(`BANKREGISTER/register.json`,`\n=> ${fileRegister}`,function (err){console.log(err)})
 
 }
 

@@ -1,0 +1,6 @@
+
+=> ID:123456 - Mov:ADD++ - Amount:5000
+=> ID:123456 - Mov:LESS- - Amount:150
+=> ID:321654 - Mov:ADD++ - Amount:951258
+=> ===>> SendID:321654 ==>> AmountMoney:600 ==>> ReceiverID<-123456 
+=> ===>> SendID:321654 ==>> AmountMoney:154 ==>> ReceiverID<-444555 
